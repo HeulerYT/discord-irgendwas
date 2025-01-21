@@ -198,29 +198,31 @@ local function Initiate()
 	end
 	CmdSettings = {}
 
-	game.Players.PlayerAdded:Connect(function(player)
-		player.Chatted:Connect(function(msg)
+	local TextChatService = game:GetService("TextChatService")
+
+	TextChatService.OnIncomingMessage = function(message: TextChatMessage)
+		local properties = Instance.new("TextChatMessageProperties")
+		if message.TextSource then
+			local player = game.Players:GetPlayerByUserId(msg.TextSource.UserId)
 			if player == LPlayer then
-				msg = msg:lower()
-				if string.sub(msg,1,3) == "/e " then
-					msg = string.sub(msg,4)
-				end
-				if string.sub(msg,1,1) == prefix then
-					local cmd
-					local space = string.find(msg," ")
-					if space then
-						cmd = string.sub(msg,2,space-1)
-					else
-						cmd = string.sub(msg,2)
-					end
+				msg = message.Text
+				msg = message:lower()
+			end
+			if string.sub(msg,1,3) == "/e " then
+				msg = string.sub(msg,4)
+			end
+			if string.sub(msg,1,1) == prefix then
+				local cmd
+				local space = string.find(msg," ")
+				if space then
+					cmd = string.sub(msg,2,space-1)
+				else
+					cmd = string.sub(msg,2)
 				end
 			end
-		end)
-	end)
+		end
+	end
 
-        local Message = msg:lower()
-		local Args = string.split(Message," ")
-		
 			if Message == ".circle host" and Host and Host.Character and Host.Character:FindFirstChild("Humanoid") and Host.Character.Humanoid.Health > 0 then
 				local angle = 0
 				local cfr = Host.Character.HumanoidRootPart.CFrame*CFrame.new(0,1,0)
