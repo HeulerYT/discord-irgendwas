@@ -1,4 +1,3 @@
-local Testing = false
 -- Cmds
 if table.find(getgenv().Alts,game.Players.LocalPlayer.UserId) then
 	getgenv().PointInTable = table.find(getgenv().Alts,game.Players.LocalPlayer.UserId)
@@ -10,49 +9,7 @@ if game.Players.LocalPlayer.Name == getgenv().HostUser or getgenv().Executed the
 end
 UserSettings().GameSettings.MasterVolume = 0
 local Crashed = false
-if Testing == false then
-	main = Instance.new("ScreenGui")
-	Frame = Instance.new("Frame")
-	TextLabel = Instance.new("TextLabel")
-	TextLabel_2 = Instance.new("TextLabel")
-	TextLabel_3 = Instance.new("TextLabel")
 
-	main.Name = "RenderScreen"
-	main.Parent = game.CoreGui
-	main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	main.IgnoreGuiInset = true
-
-	Frame.Parent = main
-	Frame.Active = true
-	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-	Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	Frame.Size = UDim2.new(1, 0, 1, 0)
-
-	TextLabel.Parent = Frame
-	TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-	TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	TextLabel.BackgroundTransparency = 1.000
-	TextLabel.Position = UDim2.new(0.5, 0, 0.419999987, 0)
-	TextLabel.Size = UDim2.new(0, 279, 0, 34)
-	TextLabel.Font = Enum.Font.Gotham
-	TextLabel.Text = "Welcome, "..game.Players.LocalPlayer.Name
-	TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel.TextScaled = false
-	TextLabel.TextSize = 19.000
-	TextLabel.TextWrapped = false
-	if not game:IsLoaded() then
-		repeat wait(.1) until game:IsLoaded() 
-	end
-	local vu = game:GetService("VirtualUser")
-	game:GetService("Players").LocalPlayer.Idled:connect(function()
-		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-		wait(1)
-		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-	end)
-	game:GetService("RunService"):Set3dRenderingEnabled(false)
-	setfpscap(5)
-end
 getgenv().Executed = true
 
 --// Code --//
@@ -254,12 +211,6 @@ local function Initiate()
 		CmdSettings[Var] = nil
 	end
 	CmdSettings = {}
-	for Index,Connection in pairs(Connections) do
-		Index[Connection] = nil
-		Connection:Disconnect()
-	end
-
-
 
 	LPlayer.Chatted:Connect(function(msg)
         local Message = msg:lower()
