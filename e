@@ -1,7 +1,4 @@
 local Testing = false
-
-local LPlayer = getgenv().HostUser
-
 -- Cmds
 if table.find(getgenv().Alts,game.Players.LocalPlayer.UserId) then
 	getgenv().PointInTable = table.find(getgenv().Alts,game.Players.LocalPlayer.UserId)
@@ -56,8 +53,6 @@ if Testing == false then
 	game:GetService("RunService"):Set3dRenderingEnabled(false)
 	setfpscap(5)
 end
-
-
 getgenv().Executed = true
 
 --// Code --//
@@ -83,8 +78,6 @@ if not Host then
 end
 print("Script loaded!")
 local CmdSettings = {}
-
-
 
 local function AirLock(Type)
 	if CmdSettings["AirLock"] == nil and Type == true then
@@ -118,6 +111,7 @@ local function GetPlayerFromString(str,ignore)
 	end
 	return nil
 end
+
 
 local BringLocations = {
 	["bank"] = CFrame.new(-396.988922, 21.7570763, -293.929779, -0.102468058, -1.9584887e-09, -0.994736314, 7.23731564e-09, 1, -2.71436984e-09, 0.994736314, -7.47735651e-09, -0.102468058),
@@ -253,170 +247,159 @@ end
 
 local CurrAnim
 
-LPlayer.Chatted:Connect(function(msg)
-	msg = msg:lower()
-	if string.sub(msg,1,3) == "/e " then
-		msg = string.sub(msg,4)
-	end
-	if string.sub(msg,1,1) == prefix then
-		local cmd
-		local space = string.find(msg," ")
-		if space then
-			cmd = string.sub(msg,2,space-1)
-		else
-			cmd = string.sub(msg,2)
-		end
-	end
-end)
+local LPlayer = getgenv().HostUser
 
 local function Initiate()
-    CurrAnim = nil
-    for Index, Var in pairs(CmdSettings) do
-        CmdSettings[Var] = nil
-    end
-    CmdSettings = {}
-    for Index, Connection in pairs(Connections) do
-        Index[Connection] = nil
-        Connection:Disconnect()
-    end
-    Connections["OnChat"] = game.Players.LocalPlayer.Chatted:Connect(function(msg)
-        msg = msg:lower()
-        if string.sub(msg, 1, 3) == "/e " then
-            msg = string.sub(msg, 4)
-        end
-        if string.sub(msg, 1, 1) == prefix then
-            local cmd
-            local space = string.find(msg, " ")
-            if space then
-                cmd = string.sub(msg, 2, space - 1)
-            else
-                cmd = string.sub(msg, 2)
-            end
+	CurrAnim = nil
+	for Index,Var in pairs(CmdSettings) do
+		CmdSettings[Var] = nil
+	end
+	CmdSettings = {}
+	for Index,Connection in pairs(Connections) do
+		Index[Connection] = nil
+		Connection:Disconnect()
+	end
 
-            local Args = string.split(msg, " ")
-            local AmountOfArgs = #Args
 
-            if Host and not Crashed and Variables["Player"].Character and Variables["Player"].Character:FindFirstChild("HumanoidRootPart") and Variables["Player"].Character:FindFirstChild("Humanoid") and Variables["Player"].Character.Humanoid.Health > 0 then
-                if cmd == "drop" then
-                    Drop(true)
-                elseif not CmdSettings["AdOn"] and cmd == "ad" and Args[2] == "on" then
-                    local newStr = string.gsub(msg, ".ad on", "")
-                    CmdSettings["AdOn"] = true
-                    while CmdSettings["AdOn"] do
-                        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(newStr, 'All')
-                        task.wait(1.5)
-                    end
-                elseif cmd == "ad off" then
-                    CmdSettings["AdOn"] = nil
-                elseif cmd == "loopdel" then
-                    if DropFolder then
-                        DropFolder:Destroy()
-                        DropFolder = nil
-                    end
-                elseif cmd == "circle host" and Host and Host.Character and Host.Character:FindFirstChild("Humanoid") and Host.Character.Humanoid.Health > 0 then
-                    local angle = 0
-                    local cfr = Host.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1, 0)
-                    local size = 3
-                    local PointInTable = getgenv().PointInTable
-                    local ZAxis
 
-                    if PointInTable <= 10 then
-                        ZAxis = 2
-                        angle = (10 - PointInTable)
-                    elseif PointInTable <= 20 then
-                        ZAxis = -1
-                        angle = (20 - PointInTable)
-                    elseif PointInTable <= 30 then
-                        ZAxis = -4
-                        angle = (30 - PointInTable)
-                    elseif PointInTable <= 40 then
-                        ZAxis = -8
-                        angle = (40 - PointInTable)
-                    end
+	LPlayer.Chatted:Connect(function(msg)
+        local Message = msg:lower()
 
-                    angle = angle * 36
-                    local Clone = game.Players.LocalPlayer.Character
-                    Clone.HumanoidRootPart.CFrame = cfr * CFrame.fromEulerAnglesXYZ(0, math.rad(angle), 0) * CFrame.new(0, -size, -10)
-                    Clone.HumanoidRootPart.CFrame = Clone.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2)
-                    Clone.HumanoidRootPart.CFrame = Clone.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(180), 0)
-                elseif cmd == "reset" then
-                    if Variables["Player"].Character then
-                        local FULLY_LOADED_CHAR = Variables["Player"].Character:FindFirstChild("FULLY_LOADED_CHAR")
-                        if FULLY_LOADED_CHAR then
-                            FULLY_LOADED_CHAR.Parent = Services["RP"]
-                            FULLY_LOADED_CHAR:Destroy()
-                        end
-                        Variables["Player"].Character:Destroy()
-                    end
-                    Initiate()
-                elseif cmd == "airlock" then
-                    AirLock(true)
-                elseif cmd == "stopairlock" then
-                    AirLock(false)
-                elseif cmd == "bring" then
-                    if Host and Host.Character and Host.Character:FindFirstChild("HumanoidRootPart") then
-                        Variables["Player"].Character.HumanoidRootPart.CFrame = Host.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -1)
-                    end
-                elseif cmd == "setup" then
-                    if Args[2] then
-                        Setup(Args[2])
-                    end
-                elseif cmd == "wallet on" then
-                    ShowWallet()
-                elseif cmd == "wallet off" then
-                    RemoveWallet()
-                elseif cmd == "dolphin" then
-                    if CurrAnim and CurrAnim.IsPlaying then
-                        CurrAnim:Stop()
-                    end
-                    local Anim = Instance.new("Animation")
-                    Anim.AnimationId = "http://www.roblox.com/asset/?id=5918726674"
-                    CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
-                    CurrAnim:Play()
-                    CurrAnim:AdjustSpeed()
-                elseif cmd == "monkey" then
-                    if CurrAnim and CurrAnim.IsPlaying then
-                        CurrAnim:Stop()
-                    end
-                    local Anim = Instance.new("Animation")
-                    Anim.AnimationId = "http://www.roblox.com/asset/?id=3333499508"
-                    CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
-                    CurrAnim:Play()
-                    CurrAnim:AdjustSpeed()
-                elseif cmd == "floss" then
-                    if CurrAnim and CurrAnim.IsPlaying then
-                        CurrAnim:Stop()
-                    end
-                    local Anim = Instance.new("Animation")
-                    Anim.AnimationId = "http://www.roblox.com/asset/?id=5917459365"
-                    CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
-                    CurrAnim:Play()
-                    CurrAnim:AdjustSpeed()
-                elseif cmd == "shuffle" then
-                    if CurrAnim and CurrAnim.IsPlaying then
-                        CurrAnim:Stop()
-                    end
-                    local Anim = Instance.new("Animation")
-                    Anim.AnimationId = "http://www.roblox.com/asset/?id=4349242221"
-                    CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
-                    CurrAnim:Play()
-                    CurrAnim:AdjustSpeed()
-                elseif cmd == "stopdance" then
-                    if CurrAnim and CurrAnim.IsPlaying then
-                        CurrAnim:Stop()
-                    end
-                end
-            end
-        end
-    end)
+
+		local Args = string.split(Message," ")
+		local AmountOfArgs = #Args
+		if Host and not Crashed and Variables["Player"].Character and Variables["Player"].Character:FindFirstChild("HumanoidRootPart") and Variables["Player"].Character:FindFirstChild("Humanoid") and Variables["Player"].Character.Humanoid.Health > 0 then
+			if Message == ".circle host" and Host and Host.Character and Host.Character:FindFirstChild("Humanoid") and Host.Character.Humanoid.Health > 0 then
+				local angle = 0
+				local cfr = Host.Character.HumanoidRootPart.CFrame*CFrame.new(0,1,0)
+				local Index = 0
+				local size = 3
+
+				local PointInTable = getgenv().PointInTable
+
+				local ZAxis
+				local angle = 0
+				if PointInTable <= 10 then
+					ZAxis = 2
+					angle = (10-PointInTable)
+				elseif PointInTable <= 20 then
+					ZAxis = -1
+					angle = (20-PointInTable)
+				elseif PointInTable <= 30 then
+					ZAxis = -4
+					angle = (30-PointInTable)
+				elseif PointInTable <= 40 then
+					ZAxis = -8
+					angle = (40-PointInTable)
+				end
+				angle = angle*36
+				local Clone = game.Players.LocalPlayer.Character
+				Clone.HumanoidRootPart.CFrame = cfr * CFrame.fromEulerAnglesXYZ(0,math.rad(angle),0) * CFrame.new(0,-size,-10)
+				Clone.HumanoidRootPart.CFrame=Clone.HumanoidRootPart.CFrame*CFrame.new(0,0,2)
+				Clone.HumanoidRootPart.CFrame=Clone.HumanoidRootPart.CFrame*CFrame.Angles(0,math.rad(180),0)
+			elseif Args[1] == ".airlock" then
+				AirLock(true)
+			elseif Args[1] == ".stopairlock" then
+				AirLock(false)
+			elseif Message == ".bring" then
+				-- didnt feel the need for a function lmao
+				if Host and Host.Character and Host.Character:FindFirstChild("HumanoidRootPart") then
+					Variables["Player"].Character.HumanoidRootPart.CFrame = Host.Character.HumanoidRootPart.CFrame*CFrame.new(0,0,-1)
+				end
+			elseif Message == ".setup bank" then
+				Setup("Bank")
+			elseif Message == ".setup admin" then
+				Setup("Admin")
+			elseif Message == ".setup klub" then
+				Setup("Klub")
+			elseif Message == ".setup vault" then
+				Setup("Vault")
+			elseif Message == ".setup train" then
+				Setup("Train")
+			elseif Message == ".wallet on" then
+				ShowWallet()
+			elseif Message == ".wallet off" then
+				RemoveWallet()
+			elseif Message == ".dolphin" then
+				if CurrAnim and CurrAnim.IsPlaying then
+					CurrAnim:Stop()
+				end
+				local Anim = Instance.new("Animation")
+				Anim.AnimationId = "http://www.roblox.com/asset/?id=5918726674"
+				CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
+				CurrAnim:Play()
+				CurrAnim:AdjustSpeed()
+			elseif Message == ".monkey" then
+				if CurrAnim and CurrAnim.IsPlaying then
+					CurrAnim:Stop()
+				end
+				local Anim = Instance.new("Animation")
+				Anim.AnimationId = "http://www.roblox.com/asset/?id=3333499508"
+				CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
+				CurrAnim:Play()
+				CurrAnim:AdjustSpeed()
+			elseif Message == ".floss" then
+				if CurrAnim and CurrAnim.IsPlaying then
+					CurrAnim:Stop()
+				end
+				local Anim = Instance.new("Animation")
+				Anim.AnimationId = "http://www.roblox.com/asset/?id=5917459365"
+				CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
+				CurrAnim:Play()
+				CurrAnim:AdjustSpeed()
+			elseif Message == ".shuffle" then
+				if CurrAnim and CurrAnim.IsPlaying then
+					CurrAnim:Stop()
+				end
+				local Anim = Instance.new("Animation")
+				Anim.AnimationId = "http://www.roblox.com/asset/?id=4349242221"
+				CurrAnim = game.Players.LocalPlayer.Character.Humanoid.Animator:LoadAnimation(Anim)
+				CurrAnim:Play()
+				CurrAnim:AdjustSpeed()
+			elseif Message == ".stopdance" then
+				if CurrAnim and CurrAnim.IsPlaying then
+					CurrAnim:Stop()
+				end
+			elseif Message == ".maskon" then
+				local plr = game.Players.LocalPlayer
+				local c = plr.Character
+				local Root = c.PrimaryPart
+				local OldCF = Root.CFrame
+
+				local Tries = 0 
+				repeat wait(0.1) Tries += 1
+					Root.CFrame = workspace.Ignored.Shop["[Surgeon Mask] - $25"].Head.CFrame*CFrame.new(math.random(-1,1),0,math.random(-1,1))
+					fireclickdetector(workspace.Ignored.Shop["[Surgeon Mask] - $25"].ClickDetector)
+				until Tries >= 50 or not c or not c:FindFirstChild("Humanoid") or c:FindFirstChild"Mask" or plr.Backpack:FindFirstChild"Mask"
+				wait(0.5)
+				if plr.Backpack:FindFirstChild("Mask") then
+					c.Humanoid:EquipTool(plr.Backpack.Mask)
+					c.Mask:Activate()
+				elseif c:FindFirstChild("Mask") then
+					c.Mask:Activate()
+				end
+				Root.CFrame = OldCF
+			elseif Message == ".maskoff" then
+				local plr = game.Players.LocalPlayer
+				local c = plr.Character
+				local Root = c.PrimaryPart
+
+				if plr.Backpack:FindFirstChild("Mask") then
+					c.Humanoid:EquipTool(plr.Backpack.Mask)
+					c.Mask:Activate()
+				elseif c:FindFirstChild("Mask") then
+					c.Mask:Activate()
+				end
+		end
+	end)
 end
 
 if Host then
-    Initiate()
+	Initiate()
 end
 
-game.Players.PlayerAdded:Connect(function(Player)
-    if Player.Name == Variables["HostUser"] then
-        Initiate()
-    end
+Services["Players"].PlayerAdded:Connect(function(Player)
+	if Player.Name == Variables["HostUser"] then
+		Initiate()
+	end
 end)
