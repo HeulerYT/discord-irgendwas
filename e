@@ -198,8 +198,26 @@ local function Initiate()
 	end
 	CmdSettings = {}
 
-	local function onPlayerChatted(player, msg)
-		if player == LPlayer then
+	game.Players.PlayerAdded:Connect(function(player)
+		player.Chatted:Connect(function(msg)
+			if player == LPlayer then
+				msg = msg:lower()
+				if string.sub(msg,1,3) == "/e " then
+					msg = string.sub(msg,4)
+				end
+				if string.sub(msg,1,1) == prefix then
+					local cmd
+					local space = string.find(msg," ")
+					if space then
+						cmd = string.sub(msg,2,space-1)
+					else
+						cmd = string.sub(msg,2)
+					end
+				end
+			end
+		end)
+	end)
+
         local Message = msg:lower()
 		local Args = string.split(Message," ")
 		
