@@ -81,24 +81,7 @@ end
 print("Script loaded!")
 local CmdSettings = {}
 
-local function Drop(Type)
-	if Type == true and CmdSettings["Dropping"] == nil then
-		CmdSettings["Dropping"] = true
-		CmdSettings["CustomDrop"] = nil
-		CmdSettings["Aura"] = nil
-		while CmdSettings["Dropping"] do
-			local args = {
-				[1] = "DropMoney",
-				[2] = "10000"
-			}
-			game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
-			wait(2.5)
-		end
-	elseif Type == false then
-		CmdSettings["Dropping"] = nil
-		CmdSettings["CustomDrop"] = nil
-	end
-end
+
 
 local function AirLock(Type)
 	if CmdSettings["AirLock"] == nil and Type == true then
@@ -131,76 +114,6 @@ local function GetPlayerFromString(str,ignore)
 		end
 	end
 	return nil
-end
-local function BringPlr(Target,POS)
-	if getgenv().PointInTable == 1 and Target.Character and Target.Character:FindFirstChild("Humanoid") then
-		CmdSettings["Aura"] = nil
-
-		local TargetPlr = Target
-
-		local c = game.Players.LocalPlayer.Character
-		local Root = c.HumanoidRootPart
-		local PrevCF = Root.CFrame
-		local TargetChar = TargetPlr.Character
-		if TargetPlr and TargetPlr.Character and TargetPlr.Character:FindFirstChild("Humanoid") and not ( not c or not c:FindFirstChild("BodyEffects") or not c.BodyEffects:FindFirstChild("K.O") or not c.BodyEffects:FindFirstChild("Grabbed")  or c.BodyEffects["K.O"].Value == true or c.BodyEffects.Grabbed.Value ~= nil or not TargetChar or not TargetChar:FindFirstChild("BodyEffects") or not TargetChar.BodyEffects:FindFirstChild("K.O") or TargetChar.BodyEffects["K.O"].Value == true ) then
-			CmdSettings["IsLocking"] = true
-
-			c.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,false)
-
-			Root.CFrame = CFrame.new(TargetChar.HumanoidRootPart.Position)*CFrame.new(0,0,1)
-
-			repeat wait()
-				Root.CFrame = CFrame.new(TargetChar.HumanoidRootPart.Position)*CFrame.new(0,0,1)
-				if not c:FindFirstChild("Combat") then
-					c.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack.Combat)     
-				end
-				c.Combat:Activate()
-			until not TargetPlr or not TargetChar or not c or not c:FindFirstChild("BodyEffects") or not c.BodyEffects:FindFirstChild("K.O") or not c.BodyEffects:FindFirstChild("Grabbed")  or c.BodyEffects["K.O"].Value == true or c.BodyEffects.Grabbed.Value ~= nil or not TargetChar or not TargetChar:FindFirstChild("BodyEffects") or not TargetChar.BodyEffects:FindFirstChild("K.O") or TargetChar.BodyEffects["K.O"].Value == true
-			Root.CFrame = CFrame.new(TargetChar.LowerTorso.Position)*CFrame.new(0,3,0)
-			if c.BodyEffects.Grabbed.Value ~= nil then
-
-			else
-				if not (not TargetPlr or not TargetChar or not c or not c:FindFirstChild("BodyEffects") or not c.BodyEffects:FindFirstChild("K.O") or not c.BodyEffects:FindFirstChild("Grabbed")  or c.BodyEffects["K.O"].Value == true or c.BodyEffects.Grabbed.Value ~= nil or not TargetChar or not TargetChar:FindFirstChild("BodyEffects") or not TargetChar.BodyEffects:FindFirstChild("K.O") or TargetChar.BodyEffects["K.O"].Value == false ) then
-					local args = {
-						[1] = "Grabbing",
-						[2] = false
-					}
-
-					game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
-				end
-
-			end
-			repeat wait(0.35)
-				if not (not TargetPlr or not TargetChar or not c or not c:FindFirstChild("BodyEffects") or not c.BodyEffects:FindFirstChild("K.O") or not c.BodyEffects:FindFirstChild("Grabbed")  or c.BodyEffects["K.O"].Value == true or c.BodyEffects.Grabbed.Value ~= nil or not TargetChar or not TargetChar:FindFirstChild("BodyEffects") or not TargetChar.BodyEffects:FindFirstChild("K.O") or TargetChar.BodyEffects["K.O"].Value == false ) then
-					Root.CFrame = CFrame.new(TargetChar.LowerTorso.Position)*CFrame.new(0,3,0)
-					if c.BodyEffects.Grabbed.Value ~= nil then
-
-					else
-						if not (not TargetPlr or not TargetChar or not c or not c:FindFirstChild("BodyEffects") or c.BodyEffects["K.O"].Value == true or c.BodyEffects.Grabbed.Value ~= nil or not TargetChar or not TargetChar:FindFirstChild("BodyEffects") or TargetChar.BodyEffects["K.O"].Value == false)  then
-							local args = {
-								[1] = "Grabbing",
-								[2] = false
-							}
-							game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
-						end
-					end
-				end
-			until not TargetPlr or not TargetChar or not c or not c:FindFirstChild("BodyEffects") or not c.BodyEffects:FindFirstChild("K.O") or not c.BodyEffects:FindFirstChild("Grabbed")  or c.BodyEffects["K.O"].Value == true or c.BodyEffects.Grabbed.Value ~= nil or not TargetChar or not TargetChar:FindFirstChild("BodyEffects") or not TargetChar.BodyEffects:FindFirstChild("K.O") or TargetChar.BodyEffects["K.O"].Value == false 
-			if POS == nil then
-				Root.CFrame = Host.Character.HumanoidRootPart.CFrame
-			else
-				Root.CFrame = POS
-			end
-			CmdSettings["IsLocking"] = nil
-			wait(1.5)
-			local args = {
-				[1] = "Grabbing",
-				[2] = false
-			}
-
-			game:GetService("ReplicatedStorage").MainEvent:FireServer(unpack(args))
-		end
-	end
 end
 
 local BringLocations = {
@@ -335,37 +248,7 @@ local function Setup(Type,Debugmode)
 
 end
 
-
-local function ShowWallet()
-	local Player = game.Players.LocalPlayer
-	if Player.Backpack:FindFirstChild("Wallet") then
-		Player.Character.Humanoid:EquipTool(Player.Backpack.Wallet)
-	end
-end
-local function RemoveWallet()
-	local Player = game.Players.LocalPlayer
-	if Player.Character:FindFirstChild("Wallet") then
-		Player.Character.Humanoid:UnequipTools()
-	end
-end
 local CurrAnim
-local AbbreviationOptions = {
-	["k"] = 1000,
-	["m"] = 1000000
-}
-
-local function GetNumberFromText(str)
-	str = string.lower(str)
-	if str:find("k") then
-		local newStr = string.gsub(str, "k", "")
-		return tonumber(newStr)*AbbreviationOptions["k"]
-	elseif str:find("m") then
-		local newStr = string.gsub(str, "m", "")
-		return tonumber(newStr)*AbbreviationOptions["m"]
-	end
-	return tonumber(str)
-end
-local DropFolder = workspace.Ignored:FindFirstChild("Drop")
 
 local function Initiate()
 	CurrAnim = nil
@@ -431,73 +314,6 @@ local function Initiate()
 				Clone.HumanoidRootPart.CFrame = cfr * CFrame.fromEulerAnglesXYZ(0,math.rad(angle),0) * CFrame.new(0,-size,-10)
 				Clone.HumanoidRootPart.CFrame=Clone.HumanoidRootPart.CFrame*CFrame.new(0,0,2)
 				Clone.HumanoidRootPart.CFrame=Clone.HumanoidRootPart.CFrame*CFrame.Angles(0,math.rad(180),0)
-			elseif Args[1] == ".crash" and Args[2] == "swag" and not Crashed then
-				local Player = GetPlayerFromString(Args[3],true)
-				if Player and Player == game.Players.LocalPlayer then
-					if game.CoreGui:FindFirstChild("RenderScreen") then
-						game.CoreGui.RenderScreen:Destroy()
-					end
-					game:GetService("RunService"):Set3dRenderingEnabled(true)
-					Crashed = true
-					loadstring(game:HttpGet('https://raw.githubusercontent.com/lerkermer/lua-projects/master/SuperCustomServerCrasher'))()
-					for Index,Var in pairs(CmdSettings) do
-						CmdSettings[Var] = nil
-					end
-					CmdSettings = {}
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)	
-				end
-			elseif Args[1] == ".crash" and Args[2] == "encrypt" and not Crashed then
-				local Player = GetPlayerFromString(Args[3],true)
-				if Player and Player == game.Players.LocalPlayer then
-					if game.CoreGui:FindFirstChild("RenderScreen") then
-						game.CoreGui.RenderScreen:Destroy()
-					end
-					game:GetService("RunService"):Set3dRenderingEnabled(true)
-					Crashed = true
-					loadstring(game:HttpGet("https://raw.githubusercontent.com/remorseW/encryptW/main/CustomEncryptCrasher.lua"))()
-
-					for Index,Var in pairs(CmdSettings) do
-						CmdSettings[Var] = nil
-					end
-					CmdSettings = {}
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)	
-				end
-			elseif Args[1] == ".crash" and Args[2] == "15min" and not Crashed then
-				local Player = GetPlayerFromString(Args[3],true)
-				if Player and Player == game.Players.LocalPlayer then
-					if game.CoreGui:FindFirstChild("RenderScreen") then
-						game.CoreGui.RenderScreen:Destroy()
-					end
-					game:GetService("RunService"):Set3dRenderingEnabled(true)
-					Crashed = true
-					loadstring(game:HttpGet("https://raw.githubusercontent.com/remorseW/encryptW/main/DahooSuperQuickCrash.lua"))()
-
-					for Index,Var in pairs(CmdSettings) do
-						CmdSettings[Var] = nil
-					end
-					CmdSettings = {}
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)
-					wait(1)
-					setfpscap(60)	
-				end
-			elseif Args[1] == ".stopdrop" then
-				Drop(false)
 			elseif Args[1] == ".reset" then
 				if Variables["Player"].Character then
 					local FULLY_LOADED_CHAR = Variables["Player"].Character:FindFirstChild("FULLY_LOADED_CHAR")
@@ -516,18 +332,6 @@ local function Initiate()
 				-- didnt feel the need for a function lmao
 				if Host and Host.Character and Host.Character:FindFirstChild("HumanoidRootPart") then
 					Variables["Player"].Character.HumanoidRootPart.CFrame = Host.Character.HumanoidRootPart.CFrame*CFrame.new(0,0,-1)
-				end
-			elseif Args[1] == ".bring" and Args[2] == "host" and BringLocations[string.lower(Args[3])] then
-				BringPlr(Host,BringLocations[string.lower(Args[3])])
-			elseif Args[1] == ".bring" and BringLocations[string.lower(Args[3])] then
-				local FoundPlayer = GetPlayerFromString(Args[2])
-				if FoundPlayer then
-					BringPlr(FoundPlayer,BringLocations[string.lower(Args[3])])
-				end
-			elseif Args[1] == ".bring" and Args[3] == "host" then
-				local FoundPlayer = GetPlayerFromString(Args[2])
-				if FoundPlayer then
-					BringPlr(FoundPlayer,nil)
 				end
 			elseif Message == ".setup bank" then
 				Setup("Bank")
@@ -582,107 +386,6 @@ local function Initiate()
 			elseif Message == ".stopdance" then
 				if CurrAnim and CurrAnim.IsPlaying then
 					CurrAnim:Stop()
-				end
-			elseif Message == ".maskon" then
-				local plr = game.Players.LocalPlayer
-				local c = plr.Character
-				local Root = c.PrimaryPart
-				local OldCF = Root.CFrame
-
-				local Tries = 0 
-				repeat wait(0.1) Tries += 1
-					Root.CFrame = workspace.Ignored.Shop["[Surgeon Mask] - $25"].Head.CFrame*CFrame.new(math.random(-1,1),0,math.random(-1,1))
-					fireclickdetector(workspace.Ignored.Shop["[Surgeon Mask] - $25"].ClickDetector)
-				until Tries >= 50 or not c or not c:FindFirstChild("Humanoid") or c:FindFirstChild"Mask" or plr.Backpack:FindFirstChild"Mask"
-				wait(0.5)
-				if plr.Backpack:FindFirstChild("Mask") then
-					c.Humanoid:EquipTool(plr.Backpack.Mask)
-					c.Mask:Activate()
-				elseif c:FindFirstChild("Mask") then
-					c.Mask:Activate()
-				end
-				Root.CFrame = OldCF
-			elseif Message == ".maskoff" then
-				local plr = game.Players.LocalPlayer
-				local c = plr.Character
-				local Root = c.PrimaryPart
-
-				if plr.Backpack:FindFirstChild("Mask") then
-					c.Humanoid:EquipTool(plr.Backpack.Mask)
-					c.Mask:Activate()
-				elseif c:FindFirstChild("Mask") then
-					c.Mask:Activate()
-				end
-			elseif Args[1] == ".aura" then
-				local Player = GetPlayerFromString(Args[2],true)
-				if Player and Player == game.Players.LocalPlayer then
-					if CmdSettings["Aura"] == nil then
-						print("Enabled!")
-						CmdSettings["Aura"] = true
-						CmdSettings["Dropping"] = nil
-						CmdSettings["CustomDrop"] = nil
-
-						while CmdSettings["Aura"] == true and DropFolder do
-							if DropFolder then
-								for i,v in pairs(DropFolder:GetChildren()) do
-									if v:IsA("BasePart") and v.Name == "MoneyDrop" then
-										if (v.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 12 then
-											if CmdSettings["Aura"] == true then
-												fireclickdetector(v.ClickDetector)
-											end
-											wait(0.2)
-										end
-									end
-								end								
-							end
-							wait()
-						end
-					end
-				end
-			elseif Args[1] == ".stopaura" then
-				CmdSettings["Aura"] = nil
-			elseif Args[1] == ".cdrop" and Args[2] ~= nil and not CmdSettings["CustomDrop"] then
-				local Number = GetNumberFromText(Args[2]) 
-				if Number and DropFolder then
-					CmdSettings["Aura"] = nil
-					CmdSettings["Dropping"] = false
-
-					local OldMoney = 0
-					for i,v in pairs(DropFolder:GetChildren()) do
-						if v.Name == "MoneyDrop" then
-							local numbers = string.gsub(v.BillboardGui.TextLabel.Text, "%D", "")
-							OldMoney += numbers
-						end
-					end
-					game.ReplicatedStorage.MainEvent:FireServer(
-						"DropMoney",
-						10000
-					)
-					CmdSettings["CustomDrop"] = true
-					coroutine.wrap(function()
-						repeat wait(2.5) 	
-							game.ReplicatedStorage.MainEvent:FireServer(
-								"DropMoney",
-								10000
-							)
-
-							local Money = 0
-							if DropFolder then
-								for i,v in pairs(DropFolder:GetChildren()) do
-									if v.Name == "MoneyDrop" then
-										local numbers = string.gsub(v.BillboardGui.TextLabel.Text, "%D", "")
-										Money += numbers
-									end
-								end 
-							end
-
-						until not DropFolder or Money >= (OldMoney+Number) or not CmdSettings["CustomDrop"]
-						if CmdSettings["CustomDrop"] then
-							CmdSettings["CustomDrop"] = nil
-							CmdSettings["Dropping"] = nil
-							game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('Custom Drop has finished.', 'All'); 
-						end
-					end)()
 				end
 			end
 		end
