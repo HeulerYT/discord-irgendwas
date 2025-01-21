@@ -7,14 +7,11 @@ end
 if game.Players.LocalPlayer.Name == getgenv().HostUser or getgenv().Executed then
 	return
 end
-UserSettings().GameSettings.MasterVolume = 0
 local Crashed = false
 
 getgenv().Executed = true
 
 --// Code --//
-
-local Connections = {}
 
 local Services = {
 	["Players"] = game:GetService("Players"),
