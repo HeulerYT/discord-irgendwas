@@ -7,7 +7,7 @@ end
 if game.Players.LocalPlayer.Name == getgenv().HostUser or getgenv().Executed then
 	return
 end
-local Crashed = false
+
 
 getgenv().Executed = true
 
@@ -53,17 +53,6 @@ local function AirLock(Type)
 	end
 end
 
-local function GetPlayerFromString(str,ignore)
-	for i,Targ in pairs(game.Players:GetPlayers()) do 
-		if not ignore and Targ == Variables["Player"] then
-			continue
-		end
-		if Targ.Name:lower():sub(1,#str) == str:lower() or  Targ.DisplayName:lower():sub(1,#str) == str:lower()  then
-			return Targ
-		end
-	end
-	return nil
-end
 
 
 local BringLocations = {
@@ -211,11 +200,8 @@ local function Initiate()
 
 	LPlayer.Chatted:Connect(function(msg)
         local Message = msg:lower()
-
-
 		local Args = string.split(Message," ")
-		local AmountOfArgs = #Args
-		if Host and not Crashed and Variables["Player"].Character and Variables["Player"].Character:FindFirstChild("HumanoidRootPart") and Variables["Player"].Character:FindFirstChild("Humanoid") and Variables["Player"].Character.Humanoid.Health > 0 then
+		
 			if Message == ".circle host" and Host and Host.Character and Host.Character:FindFirstChild("Humanoid") and Host.Character.Humanoid.Health > 0 then
 				local angle = 0
 				local cfr = Host.Character.HumanoidRootPart.CFrame*CFrame.new(0,1,0)
