@@ -271,15 +271,15 @@ end)
 
 local function Initiate()
     CurrAnim = nil
-    for Index,Var in pairs(CmdSettings) do
+    for Index, Var in pairs(CmdSettings) do
         CmdSettings[Var] = nil
     end
     CmdSettings = {}
-    for Index,Connection in pairs(Connections) do
+    for Index, Connection in pairs(Connections) do
         Index[Connection] = nil
         Connection:Disconnect()
     end
-    Connections["OnChat"] = LPlayer.Chatted:Connect(function(msg)
+    Connections["OnChat"] = game.Players.LocalPlayer.Chatted:Connect(function(msg)
         msg = msg:lower()
         if string.sub(msg, 1, 3) == "/e " then
             msg = string.sub(msg, 4)
@@ -304,7 +304,7 @@ local function Initiate()
                     CmdSettings["AdOn"] = true
                     while CmdSettings["AdOn"] do
                         game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(newStr, 'All')
-                        wait(1.5)
+                        task.wait(1.5)
                     end
                 elseif cmd == "ad off" then
                     CmdSettings["AdOn"] = nil
@@ -415,7 +415,7 @@ if Host then
     Initiate()
 end
 
-Services["Players"].PlayerAdded:Connect(function(Player)
+game.Players.PlayerAdded:Connect(function(Player)
     if Player.Name == Variables["HostUser"] then
         Initiate()
     end
