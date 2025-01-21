@@ -198,7 +198,8 @@ local function Initiate()
 	end
 	CmdSettings = {}
 
-	LPlayer.Chatted:Connect(function(msg)
+	local function onPlayerChatted(player, msg)
+		if player == LPlayer then
         local Message = msg:lower()
 		local Args = string.split(Message," ")
 		
