@@ -60,7 +60,6 @@ getgenv().Executed = true
 local Connections = {}
 
 local Services = {
-	["RP"] = game:GetService("ReplicatedStorage"),
 	["Players"] = game:GetService("Players"),
 }
 
