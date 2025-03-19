@@ -1,4 +1,5 @@
 --! Debugger
+print("prem")
 
 local DEBUG = false
 
